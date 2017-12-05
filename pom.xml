@@ -19,8 +19,6 @@
 		<slf4j.version>1.7.25</slf4j.version>
 		<!-- servlet版本 -->
 		<servlet.version>2.5</servlet.version>
-		<!-- jetty版本 -->
-		<jetty.version>9.2.8.v20150217</jetty.version>
 		<!-- spring版本-->
 		<spring.version>3.2.0.RC1</spring.version>
 		<!-- jstl版本-->
@@ -31,6 +29,75 @@
 		<commons.logging.version>1.1</commons.logging.version>
 		<!-- fastjson版本-->
 		<fastjson.version>1.2.31</fastjson.version>
+		<!-- jetty版本 -->
+		<jetty.version>9.2.8.v20150217</jetty.version>
+		<!-- jetty端口号 -->
+		<jetty.port>8081</jetty.port>
+		<!-- jetty是否热部署0代表关闭大于0开启 -->
+		<jetty.scanIntervalSeconds>2</jetty.scanIntervalSeconds>
+		<!-- jetty关闭端口号 -->
+		<jetty.stopPort>9966</jetty.stopPort>
+
+		<!-- tomcat版本 -->
+		<tomcat.version>1.1</tomcat.version>
+		<!-- tomcat端口号 -->
+		<tomcat.port>8080</tomcat.port>
+		<!-- tomcat的uriEncoding编码 -->
+		<tomcat.uriEncoding>UTF-8</tomcat.uriEncoding>
+
+
+		<!-- sql插件版本 -->
+		<maven.plugin.sql.version>1.5</maven.plugin.sql.version>
+		<!-- sql插件mysql驱动版本 -->
+		<maven.plugin.sql.mysql.connector.version>5.1.19</maven.plugin.sql.mysql.connector.version>
+		<!-- sql插件oracle驱动版本 -->
+		<maven.plugin.sql.oracle.connector.version>11.2.0.3</maven.plugin.sql.oracle.connector.version>
+		<!-- 1.sql插件mysql相关配置 -->
+			<!-- sql插件mysql驱动class -->
+			<maven.plugin.sql.driver>com.mysql.jdbc.Driver</maven.plugin.sql.driver>
+			<!-- sql插件mysql用户名 -->
+			<maven.plugin.sql.username>root</maven.plugin.sql.username>
+			<!-- sql插件mysql密码 -->
+			<maven.plugin.sql.password>admin</maven.plugin.sql.password>
+			<!-- sql插件mysql的url -->
+			<maven.plugin.sql.url>jdbc:mysql://localhost:3306/?useUnicode=true&amp;characterEncoding=UTF-8</maven.plugin.sql.url>
+			<!-- sql插件mysql的url  选择test数据库 -->
+			<!-- <maven.plugin.sql.url>jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8</maven.plugin.sql.url> -->
+			<!-- sql插件mysql的url  错误写法没有斜杠 -->
+			<!-- <maven.plugin.sql.url>jdbc:mysql://localhost:3306?useUnicode=true&amp;characterEncoding=UTF-8</maven.plugin.sql.url> -->
+			<!-- sql插件sql命令创建数据库 -->
+			<maven.plugin.sql.command.create.database>create database yourdb</maven.plugin.sql.command.create.database>
+			<!-- sql插件sql命令创建数据表  注意加数据库前缀 -->
+			<maven.plugin.sql.command.create.table>create table yourdb.person(id int)</maven.plugin.sql.command.create.table>
+			<!-- sql插件sql文件删除数据表  注意加数据库前缀 -->
+			<maven.plugin.sql.file.drop>src/test/resources/sql/mysql/drop/*.sql</maven.plugin.sql.file.drop>
+			<!-- sql插件sql文件创建数据表  注意加数据库前缀 -->
+			<maven.plugin.sql.file.create>src/test/resources/sql/mysql/create/*.sql</maven.plugin.sql.file.create>
+			<!-- sql插件sql文件创建数据表  注意加数据库前缀 -->
+			<maven.plugin.sql.file.init>src/test/resources/sql/mysql/init/*.sql</maven.plugin.sql.file.init>
+			<!-- sql插件sql文件创建quartz数据表  注意加数据库前缀 -->
+			<maven.plugin.sql.file.quartz>src/test/resources/sql/mysql/quartz/*.sql</maven.plugin.sql.file.quartz>
+		<!-- 2.sql插件oracle相关配置 -->
+			<!--
+			sql插件oracle驱动class
+			<maven.plugin.sql.driver>oracle.jdbc.driver.OracleDriver</maven.plugin.sql.driver>
+			sql插件oracle用户名
+			<maven.plugin.sql.username>hjrtf</maven.plugin.sql.username>
+			sql插件oracle密码
+			<maven.plugin.sql.password>hjrtf211</maven.plugin.sql.password>
+			sql插件oracle的url
+			<maven.plugin.sql.url>jdbc:oracle:thin:@10.168.17.212:1521:testnewall</maven.plugin.sql.url>
+			sql插件sql命令创建数据库这条命令oracle不可用
+			<maven.plugin.sql.command.create.database>create database yourdb</maven.plugin.sql.command.create.database>
+			sql插件sql命令创建数据表  注意可加可不加数据库前缀
+			<maven.plugin.sql.command.create.table>create table hjrtf.person(id int)</maven.plugin.sql.command.create.table>
+			sql插件sql文件删除数据表  注意不能加数据库前缀
+			<maven.plugin.sql.file.drop>src/test/resources/sql/oracle/drop/*.sql</maven.plugin.sql.file.drop>
+			sql插件sql文件创建数据表  注意不能加数据库前缀
+			<maven.plugin.sql.file.create>src/test/resources/sql/oracle/create/*.sql</maven.plugin.sql.file.create>
+			sql插件sql文件创建数据表  注意不能加数据库前缀
+			<maven.plugin.sql.file.init>src/test/resources/sql/oracle/init/*.sql</maven.plugin.sql.file.init>
+		 	-->
 	</properties>
 	<!--1.4.配置名称和url可以忽略-->
 	<name>${project.artifactId}</name>
@@ -303,7 +370,7 @@
 	            <artifactId>maven-archetype-plugin</artifactId>
 	            <version>${archetype.version}</version>
 	        </plugin>
-	        <!-- jetty插件 -->
+	        <!-- jetty9插件：jetty:run使用外置浏览器测试 -->
 	        <plugin>
 		      	<groupId>org.eclipse.jetty</groupId>
 		      	<artifactId>jetty-maven-plugin</artifactId>
@@ -311,52 +378,58 @@
 		      	<configuration>
 		      		<!-- 配置启动端口号 -->
 					<httpConnector>
-					    <port>8081</port>
+					    <port>${jetty.port}</port>
 					</httpConnector>
 					<!-- 配置自动热部署0代表关闭大于0开启 -->
-					<scanIntervalSeconds>2</scanIntervalSeconds>
-					<!-- 配置jetty停止命令 -->
-					<stopKey>shutdown</stopKey>
-  					<stopPort>9966</stopPort>
-					<!-- 配置URL项目名未生效 -->
-					<!--
+					<scanIntervalSeconds>${jetty.scanIntervalSeconds}</scanIntervalSeconds>
+					<!-- localhost:端口号/下面内容 -->
 					<webApp>
-			          	<contextPath>/web</contextPath>
+			          	<contextPath>/${project.artifactId}</contextPath>
 			        </webApp>
-			         -->
+			        <!-- 配置jetty停止命令 -->
+					<stopKey>shutdown</stopKey>
+  					<stopPort>${jetty.stopPort}</stopPort>
 		      	</configuration>
 		    </plugin>
-		    <!-- 配置未生效 -->
+			<!-- tomcat插件：tomcat:run使用外置浏览器测试 -->
 		    <plugin>
-			   	<groupId>org.codehaus.mojo</groupId>
-			   	<artifactId>tomcat-maven-plugin</artifactId>
-			   	<version>1.1</version>
-			   	<configuration>
-					<path>/Demo1</path>
-				    <port>8888</port>
-				    <uriEncoding>UTF-8</uriEncoding>
-			    </configuration>
-			</plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tomcat-maven-plugin</artifactId>
+                <version>${tomcat.version}</version>
+                <configuration>
+                    <path>/${project.artifactId}</path>
+                    <port>${tomcat.port}</port>
+                    <uriEncoding>${tomcat.uriEncoding}</uriEncoding>
+                    <!-- <url>http://localhost:8080/${project.artifactId}/</url> -->
+                    <!-- <server>tomcat6</server> -->
+                </configuration>
+            </plugin>
 			<!-- sql插件 -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>sql-maven-plugin</artifactId>
-				<version>1.5</version>
+				<version>${maven.plugin.sql.version}</version>
+				<!-- sql插件的jar -->
 				<dependencies>
+					<!-- mysql驱动 -->
 					<dependency>
 						<groupId>mysql</groupId>
 						<artifactId>mysql-connector-java</artifactId>
-						<version>5.1.19</version>
+						<version>${maven.plugin.sql.mysql.connector.version}</version>
+					</dependency>
+					<!-- oracle驱动 -->
+					<dependency>
+						<groupId>com.oracle</groupId>
+						<artifactId>ojdbc6</artifactId>
+						<version>${maven.plugin.sql.oracle.connector.version}</version>
 					</dependency>
 				</dependencies>
+				<!-- sql插件的配置 -->
 				<configuration>
-					<driver>com.mysql.jdbc.Driver</driver>
-					<username>root</username>
-					<password>admin</password>
-					<!-- <url>jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8</url> -->
-					<url>jdbc:mysql://localhost:3306/yourdb?useUnicode=true&amp;characterEncoding=UTF-8</url>
-					<!-- 错误：<url>jdbc:mysql://localhost:3306?useUnicode=true&amp;characterEncoding=UTF-8</url> -->
-					<!-- 测试sql命令创建数据库使用<url>jdbc:mysql://localhost:3306</url> -->
+					<driver>${maven.plugin.sql.driver}</driver>
+					<username>${maven.plugin.sql.username}</username>
+					<password>${maven.plugin.sql.password}</password>
+					<url>${maven.plugin.sql.url}</url>
 				</configuration>
 				<executions>
 					<!-- 命令创建数据库 -->
@@ -364,12 +437,12 @@
 			            <id>create-database</id>
 			            <phase>process-test-resources</phase>
 			            <goals>
-			              <goal>execute</goal>
+			              	<goal>execute</goal>
 			            </goals>
 			            <configuration>
-			              <autocommit>true</autocommit>
-			             <sqlCommand>create database yourdb1</sqlCommand>
-			              <onError>continue</onError>
+							<autocommit>true</autocommit>
+			             	<sqlCommand>${maven.plugin.sql.command.create.database}</sqlCommand>
+			              	<onError>continue</onError>
 			            </configuration>
 			        </execution>
 					<!-- 命令创建数据库表 -->
@@ -377,12 +450,12 @@
 			            <id>create-table</id>
 			            <phase>process-test-resources</phase>
 			            <goals>
-			              <goal>execute</goal>
+			              	<goal>execute</goal>
 			            </goals>
 			            <configuration>
-			              <autocommit>true</autocommit>
-			              <sqlCommand>create table yourtable(id INT)</sqlCommand>
-			              <onError>continue</onError>
+			              	<autocommit>true</autocommit>
+			              	<sqlCommand>${maven.plugin.sql.command.create.table}</sqlCommand>
+			              	<onError>continue</onError>
 			            </configuration>
 			        </execution>
 			        <!-- 删除表 -->
@@ -397,7 +470,7 @@
 							<fileset>
 								<basedir>${basedir}</basedir>
 								<includes>
-									<include>src/test/resources/sql/drop/*.sql</include>
+									<include>${maven.plugin.sql.file.drop}</include>
 								</includes>
 							</fileset>
 							<onError>continue</onError>
@@ -415,7 +488,7 @@
                             <fileset>
 								<basedir>${basedir}</basedir>
 								<includes>
-									<include>src/test/resources/sql/create/*.sql</include>
+									<include>${maven.plugin.sql.file.create}</include>
 								</includes>
 							</fileset>
                         </configuration>
@@ -432,7 +505,24 @@
                             <fileset>
 								<basedir>${basedir}</basedir>
 								<includes>
-									<include>src/test/resources/sql/init/*.sql</include>
+									<include>${maven.plugin.sql.file.init}</include>
+								</includes>
+							</fileset>
+                        </configuration>
+                    </execution>
+                    <!-- 初始化quartz数据 -->
+                    <execution>
+                        <id>quartz-db</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <autocommit>true</autocommit>
+                            <fileset>
+								<basedir>${basedir}</basedir>
+								<includes>
+									<include>${maven.plugin.sql.file.quartz}</include>
 								</includes>
 							</fileset>
                         </configuration>
